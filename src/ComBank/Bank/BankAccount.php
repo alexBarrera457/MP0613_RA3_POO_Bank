@@ -1,4 +1,6 @@
-<?php namespace ComBank\Bank;
+<?php
+
+namespace ComBank\Bank;
 
 /**
  * Created by VS Code.
@@ -17,42 +19,87 @@ use ComBank\Exceptions\InvalidOverdraftFundsException;
 use ComBank\OverdraftStrategy\Contracts\OverdraftInterface;
 use ComBank\Support\Traits\AmountValidationTrait;
 use ComBank\Transactions\Contracts\BankTransactionInterface;
+use Override;
 
-class BankAccount
+class BankAccount implements BankAccountInterface
 {
     private float $balance;
     private bool $status;
-    public function __construct(float $balance = 0.0) {
+    private $overdraft;
+
+    public function __construct(float $balance = 0.0)
+    {
         $this->balance = $balance;
         $this->status = true;
+        $this->overdraft = new NoOverdraft();
+    }
+
+    public function transaction(BankTransactionInterface $bankTransaction): void
+    {
+        if (!$this->isOpen()) {
+            throw new BankAccountException();
+        }
+        $newBalance = $bankTransaction->applyTransaction($this);
+        $this->setBalance($newBalance);
+    }
+
+
+    public function isOpen(): bool
+    {
+        return $this->status;
+    }
+
+    public function closeAccount()
+    {
+        return $this->status = false;
+    }
+
+    public function reopenAccount()
+    {
+        if ($this->isOpen()) {
+
+            throw new BankAccountException();
+        }
+        return $this->status = true;
+    }
+    /**
+     * Get the value of status
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * Set the value of balance
+     *
+     * @return  self
+     */
+    public function setBalance($balance)
+    {
+        $this->balance = $balance;
+
+        return $this;
     }
 
     /**
      * Get the value of balance
-     */ 
+     */
     public function getBalance()
     {
         return $this->balance;
     }
 
-    public function closeAcount(){
-        return $this-> status = false;
-    }
-
-    public function reopenAcount(){
-        return $this-> status = true;
-    }
-
-    public function transaction(BankTransactionInterface)
+    public function applyOverdraft(OverdraftInterface $overdraft)
     {
-
+        return $this->overdraft = $overdraft;
     }
-    
+
     /**
-     * Get the value of status
-     */ 
-    public function getStatus()
+     * Get the value of overdraft
+     */
+    public function getOverdraft()
     {
-        return $this->status;
+        return $this->overdraft;
     }
-    }
+}
