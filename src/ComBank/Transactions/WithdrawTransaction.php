@@ -37,7 +37,7 @@ class WithdrawTransaction extends BaseTransaction implements BankTransactionInte
             return $account->getBalance() - $this->amount;
         }
         if ($verify2->getOverdraftFundsAmount() == 0) {
-            throw new InvalidOverdraftFundsException;
+            throw new FailedTransactionException;
         }
         throw new FailedTransactionException();
     }

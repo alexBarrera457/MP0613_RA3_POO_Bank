@@ -13,6 +13,7 @@ use ComBank\Transactions\DepositTransaction;
 use ComBank\Transactions\WithdrawTransaction;
 use ComBank\Exceptions\BankAccountException;
 use ComBank\Exceptions\FailedTransactionException;
+use ComBank\Exceptions\InvalidArgsException;
 use ComBank\Exceptions\ZeroAmountException;
 
 require_once 'bootstrap.php';
@@ -50,6 +51,8 @@ try {
     pl($e->getMessage());
 } catch (FailedTransactionException $e) {
     pl('Error transaction: ' . $e->getMessage());
+} catch (InvalidArgsException $e) {
+    pl('Error validation email: ' . $e->getMessage());
 }
 pl('My balance after failed last transaction : ' . $bankAccount1->getBalance());
 
@@ -92,10 +95,40 @@ try {
     $bankAccount2->transaction(new WithdrawTransaction(20.0));
 } catch (FailedTransactionException $e) {
     pl('Error transaction: ' . $e->getMessage());
+} catch (InvalidArgsException $e) {
+    pl('Error validation email: ' . $e->getMessage());
 }
 pl('My new balance after withdrawal (-20) with funds : ' . $bankAccount2->getBalance());
 
 try {
 } catch (BankAccountException $e) {
     pl($e->getMessage());
+}
+
+//---[Bank account 3]---/
+
+pl('--------- [Start testing bank account #3, account with correct format email] --------');
+try {
+    $bankAccount3 = new BankAccount(600.0, "john.smith@example.com");
+
+    // show balance account
+    pl('My balance: ' . $bankAccount3->getBalance());
+    pl('My email: ' . $bankAccount3->getEmail());
+} catch (InvalidArgsException $e) {
+    pl('Error validation email: ' . $e->getMessage());
+}
+
+//---[Bank account 4]---/
+
+
+pl('--------- [Start testing bank account #4, account with incorrect format email] --------');
+try {
+    $bankAccount4 = new BankAccount(600.0, "johnexample.com");
+
+
+    // show balance account
+    pl('My balance: ' . $bankAccount4->getBalance());
+    pl('My email: ' . $bankAccount4->getEmail());
+} catch (InvalidArgsException $e) {
+    pl('Error validation email: ' . $e->getMessage());
 }
