@@ -15,8 +15,15 @@ use ComBank\Exceptions\BankAccountException;
 use ComBank\Exceptions\FailedTransactionException;
 use ComBank\Exceptions\InvalidArgsException;
 use ComBank\Exceptions\ZeroAmountException;
+use ComBank\OverdraftStrategy\GoldOverdraft;
+use ComBank\OverdraftStrategy\NoOverdraft;
+use ComBank\Transactions\InterestTransaction;
+
 
 require_once 'bootstrap.php';
+
+
+pl('--------- PR03 POO ENTREGA ---------');
 
 
 //---[Bank account 1]---/
@@ -105,7 +112,12 @@ try {
     pl($e->getMessage());
 }
 
-//---[Bank account 3]---/
+
+pl('-----------------------------------------------------------------------------------------------------');
+
+pl('--------- EXAMEN SIMULACRO 1 ---------');
+
+//---[Bank account 3 with correct format email]---/
 
 pl('--------- [Start testing bank account #3, account with correct format email] --------');
 try {
@@ -118,7 +130,7 @@ try {
     pl('Error validation email: ' . $e->getMessage());
 }
 
-//---[Bank account 4]---/
+//---[Bank account 4 with incorrect format email]---/
 
 
 pl('--------- [Start testing bank account #4, account with incorrect format email] --------');
@@ -132,3 +144,68 @@ try {
 } catch (InvalidArgsException $e) {
     pl('Error validation email: ' . $e->getMessage());
 }
+pl('-----------------------------------------------------------------------------------------------------');
+
+pl('--------- EXAMEN SIMULACRO 2 ---------');
+
+//---[Bank account 5 (NoOverdraft with Interest)]---/
+
+pl('--------- [Start testing bank account #5, No overdraft] --------');
+
+$bankAccount5 = new BankAccount(10000.0, "nooverdraft@gmail.com");
+$bankAccount5->applyOverdraft(new NoOverdraft());
+
+try {
+    pl('My balance: ' . $bankAccount5->getBalance());
+    pl('My email: ' . $bankAccount5->getEmail());
+    pl('Doing interest transaction with rate ' . $bankAccount5->getOverdraft()->getInterestRate() . '%');
+    $bankAccount5->transaction(new InterestTransaction());
+    pl('My new balance after interest : ' . $bankAccount5->getBalance());
+} catch (FailedTransactionException $e) {
+    pl('Error transaction: ' . $e->getMessage());
+} catch (BankAccountException $e) {
+    pl($e->getMessage());
+}
+
+
+//---[Bank account 6 (SilverOverdraft with Interest)]---/
+
+pl('--------- [Start testing bank account #6, Silver overdraft] --------');
+
+$bankAccount6 = new BankAccount(10000.0, "silveroverdraft@gmail.com");
+$bankAccount6->applyOverdraft(new SilverOverdraft());
+
+try {
+    pl('My balance: ' . $bankAccount6->getBalance());
+    pl('My email: ' . $bankAccount6->getEmail());
+    pl('Doing interest transaction with rate ' . $bankAccount6->getOverdraft()->getInterestRate() . '%');
+    $bankAccount6->transaction(new InterestTransaction());
+    pl('My new balance after interest : ' . $bankAccount6->getBalance());
+} catch (FailedTransactionException $e) {
+    pl('Error transaction: ' . $e->getMessage());
+} catch (BankAccountException $e) {
+    pl($e->getMessage());
+}
+
+
+
+//---[Bank account 7 (Gold Overdraft with Interest)]---/
+
+pl('--------- [Start testing bank account #7, Gold overdraft] --------');
+
+$bankAccount7 = new BankAccount(10000.0, "goldoverdraft@gmail.com");
+$bankAccount7->applyOverdraft(new GoldOverdraft());
+
+try {
+    pl('My balance: ' . $bankAccount7->getBalance());
+    pl('My email: ' . $bankAccount7->getEmail());
+    pl('Doing interest transaction with rate ' . $bankAccount7->getOverdraft()->getInterestRate() . '%');
+    $bankAccount7->transaction(new InterestTransaction());
+    pl('My new balance after interest : ' . $bankAccount7->getBalance());
+} catch (FailedTransactionException $e) {
+    pl('Error transaction: ' . $e->getMessage());
+} catch (BankAccountException $e) {
+    pl($e->getMessage());
+}
+
+pl('-----------------------------------------------------------------------------------------------------');

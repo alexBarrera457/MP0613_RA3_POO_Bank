@@ -1,4 +1,6 @@
-<?php namespace ComBank\Transactions\Contracts;
+<?php
+
+namespace ComBank\Transactions\Contracts;
 
 /**
  * Created by VS Code.
@@ -13,6 +15,8 @@ use ComBank\Exceptions\InvalidOverdraftFundsException;
 interface BankTransactionInterface
 {
     public function applyTransaction(BankAccountInterface $acount): float;
+
+    public function getTransactionInfo(): string;
 
     public function getAmount(): float;
 }

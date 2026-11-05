@@ -3,6 +3,7 @@
 namespace ComBank\OverdraftStrategy;
 
 use ComBank\OverdraftStrategy\Contracts\OverdraftInterface;
+use Override;
 
 /**
  * Created by VS Code.
@@ -33,5 +34,10 @@ class SilverOverdraft implements OverdraftInterface
       {
 
             return 100.0;
+      }
+
+      public function getInterestRate(): int
+      {
+            return 5;
       }
 }
