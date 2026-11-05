@@ -18,11 +18,11 @@ use ComBank\Exceptions\ZeroAmountException;
 use ComBank\OverdraftStrategy\GoldOverdraft;
 use ComBank\OverdraftStrategy\NoOverdraft;
 use ComBank\Transactions\InterestTransaction;
-
+use ComBank\Transactions\TransferTransaction;
 
 require_once 'bootstrap.php';
 
-
+/*
 pl('--------- PR03 POO ENTREGA ---------');
 
 
@@ -207,5 +207,25 @@ try {
 } catch (BankAccountException $e) {
     pl($e->getMessage());
 }
-
+*/
 pl('-----------------------------------------------------------------------------------------------------');
+pl('--------- EXAMEN ---------');
+
+
+//---[Bank account 8 (Transfer Transaction)]---/
+
+pl('--------- [Start testing bank account #8, Transfer Transaction] --------');
+
+$bankAccount1 = new BankAccount(500.0);
+$bankAccount2 = new BankAccount(200.0);
+
+pl('Source Account Balance: ' . $bankAccount1->getBalance());
+pl('Destination Account Balance: ' . $bankAccount2->getBalance());
+
+$bankAccount1->transaction(new TransferTransaction(100.0, $bankAccount2));
+
+pl('Transfer Amount: ');
+
+pl('Source Balance After Transaction: ' . $bankAccount1->getBalance());
+
+pl('Destination Balance After Transaction: ' . $bankAccount2->getBalance());

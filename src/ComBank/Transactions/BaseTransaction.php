@@ -17,6 +17,12 @@ abstract class BaseTransaction
 {
     protected $amount;
 
+    public function __construct(float $amount)
+    {
+
+        $this->amount = $amount;
+    }
+
     /**
      * Get the value of amount
      */
